@@ -48,14 +48,14 @@ require_once '../includes/header.php';
 <div class="dashboard">
   <div class="dash-header">
     <div>
-      <div class="dash-title">Edit Donation ✏️</div>
+      <div class="dash-title">Edit Donation</div>
       <div class="dash-subtitle">Update the details for your donation</div>
     </div>
     <a href="my_donations.php" class="btn btn-outline">← Back</a>
   </div>
 
   <?php if ($error): ?>
-    <div class="alert alert-error">⚠️ <?= htmlspecialchars($error) ?></div>
+    <div class="alert alert-error">Error: <?= htmlspecialchars($error) ?></div>
   <?php endif; ?>
 
   <div class="form-card wide" style="max-width:680px; margin:0;">
@@ -78,8 +78,8 @@ require_once '../includes/header.php';
         <div class="form-group">
           <label class="form-label">Food Type *</label>
           <select name="food_type" class="form-control" required>
-            <option value="veg"     <?= $d['food_type']==='veg'     ? 'selected' : '' ?>>🥦 Vegetarian</option>
-            <option value="non-veg" <?= $d['food_type']==='non-veg' ? 'selected' : '' ?>>🍗 Non-Vegetarian</option>
+            <option value="veg"     <?= $d['food_type']==='veg'     ? 'selected' : '' ?>>Vegetarian</option>
+            <option value="non-veg" <?= $d['food_type']==='non-veg' ? 'selected' : '' ?>>Non-Vegetarian</option>
           </select>
         </div>
       </div>
@@ -97,7 +97,7 @@ require_once '../includes/header.php';
       </div>
 
       <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:13px;">
-        💾 Save Changes
+        Save Changes
       </button>
     </form>
   </div>
