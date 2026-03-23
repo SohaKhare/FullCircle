@@ -119,3 +119,4 @@ Donor marks as Complete → donation status: completed
 | `contact_messages` | Messages from contact form |
 
 ---
+Developed by Soha Khare, Shreeya Madulkar and Sweekriti Maheshwari
