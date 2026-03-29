@@ -6,7 +6,7 @@
       <li><a href="<?= $base ?>contact.php">Contact</a></li>
       <li><a href="<?= $base ?>register.php">Register</a></li>
     </ul>
-    <span class="footer-copy">&copy; <?= date('Y') ?> FullCircle</span>
+    <span class="footer-copy">&copy; <?= date('Y') ?> Developed by Soha, Shreeya and Sweekriti</span>
   </div>
 </footer>
 <script src="<?= $base ?>js/script.js"></script>

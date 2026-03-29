@@ -3,54 +3,27 @@ $pageTitle = "Register";
 require_once 'includes/db.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-$error      = '';
-$success    = '';
-$prefill    = $_GET['role'] ?? '';
-$old        = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $old['name']     = trim($_POST['name']     ?? '');
-    $old['email']    = trim($_POST['email']    ?? '');
-    $old['phone']    = trim($_POST['phone']    ?? '');
-    $old['role']     = $_POST['role']          ?? '';
-    $old['address']  = trim($_POST['address']  ?? '');
-    $old['ngo_name'] = trim($_POST['ngo_name'] ?? '');
-    $password        = $_POST['password']      ?? '';
-    $confirm         = $_POST['confirm_password'] ?? '';
-
-    // Server-side validation
-    if (!$old['name'] || !$old['email'] || !$password || !$old['role']) {
-        $error = "Please fill all required fields.";
-    } elseif (!filter_var($old['email'], FILTER_VALIDATE_EMAIL)) {
-        $error = "Please enter a valid email address.";
-    } elseif ($old['phone'] && !preg_match('/^\+?[\d\s\-\(\)]{10,15}$/', $old['phone'])) {
-        $error = "Phone number must be 10 to 13 digits.";
-    } elseif (strlen($password) < 6) {
-        $error = "Password must be at least 6 characters.";
-    } elseif ($password !== $confirm) {
-        $error = "Passwords do not match.";
-    } elseif ($old['role'] === 'ngo' && !$old['ngo_name']) {
-        $error = "Organisation name is required.";
-    } else {
-        $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
-        $stmt->bind_param("s", $old['email']);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
-            $error = "This email is already registered.";
-        } else {
-            $hashed = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (name,email,phone,password,role,address,ngo_name) VALUES (?,?,?,?,?,?,?)");
-            $stmt->bind_param("sssssss", $old['name'], $old['email'], $old['phone'], $hashed, $old['role'], $old['address'], $old['ngo_name']);
-            if ($stmt->execute()) {
-                $success = "Account created. You can now sign in.";
-                $old = [];
-            } else {
-                $error = "Registration failed. Please try again.";
-            }
-        }
-    }
+$handler = $_GET['handler'] ?? 'post';
+if (!in_array($handler, ['post', 'get', 'request'], true)) {
+  $handler = 'post';
 }
+
+$prefill = $_GET['role'] ?? '';
+
+$error = $_SESSION['reg_error'] ?? '';
+$success = $_SESSION['reg_success'] ?? '';
+$old = $_SESSION['reg_old'] ?? [];
+
+unset($_SESSION['reg_error'], $_SESSION['reg_success'], $_SESSION['reg_old']);
+
+$formAction = match ($handler) {
+  'get'     => 'get_registration.php',
+  'request' => 'request_registration.php',
+  default   => 'post_registration.php',
+};
+
+$formMethod = $handler === 'get' ? 'GET' : 'POST';
 
 require_once 'includes/header.php';
 ?>
@@ -67,7 +40,7 @@ require_once 'includes/header.php';
       <div class="alert alert-success"><?= $success ?> <a href="login.php">Sign in</a></div>
     <?php endif; ?>
 
-    <form id="register-form" method="POST" action="" novalidate>
+    <form id="register-form" method="<?= htmlspecialchars($formMethod) ?>" action="<?= htmlspecialchars($formAction) ?>" novalidate>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label" for="reg-name">Full name <span style="color:#dc2626">*</span></label>
