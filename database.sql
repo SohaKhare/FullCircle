@@ -57,6 +57,19 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- ─── TABLE: remember_tokens ("Remember me" cookies) ───
+CREATE TABLE IF NOT EXISTS remember_tokens (
+    token_id    INT AUTO_INCREMENT PRIMARY KEY,
+    user_id     INT NOT NULL,
+    token_hash  CHAR(64) NOT NULL UNIQUE,
+    expires_at  DATETIME NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_used_at DATETIME NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX (user_id),
+    INDEX (expires_at)
+);
+
 -- ══════════════════════════════════════════════
 --   SAMPLE DATA
 -- ══════════════════════════════════════════════

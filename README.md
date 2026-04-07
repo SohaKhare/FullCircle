@@ -2,6 +2,7 @@
 
 A web-based platform connecting **food donors** with **NGOs** to reduce food waste and fight hunger.
 Food wastage and food insecurity exist together, especially in urban areas. Large amounts of surplus food from restaurants, events, and households are thrown away daily, while many people still do not have access to proper meals. One major reason for this problem is the lack of an organized system to connect food donors with NGOs in real time.
+
 ---
 
 ## Quick Setup (XAMPP)
@@ -111,12 +112,14 @@ Donor marks as Complete → donation status: completed
 
 ## 📋 Database Tables
 
-| Table              | Purpose                    |
-| ------------------ | -------------------------- |
-| `users`            | Donors and NGOs            |
-| `donations`        | Food listings by donors    |
-| `requests`         | NGO requests for donations |
-| `contact_messages` | Messages from contact form |
+| Table              | Purpose                               |
+| ------------------ | ------------------------------------- |
+| `users`            | Donors and NGOs                       |
+| `donations`        | Food listings by donors               |
+| `requests`         | NGO requests for donations            |
+| `contact_messages` | Messages from contact form            |
+| `remember_tokens`  | Persistent login tokens (Remember me) |
 
 ---
+
 Developed by Soha Khare, Shreeya Madulkar and Sweekriti Maheshwari
