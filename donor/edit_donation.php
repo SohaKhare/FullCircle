@@ -20,16 +20,35 @@ if (!$d) {
 $success = '';
 $error = '';
 
+function normalizeExpiryDateToDatetime(string $expiryDateRaw): ?string {
+  $expiryDateRaw = trim($expiryDateRaw);
+  $dt = DateTime::createFromFormat('Y-m-d', $expiryDateRaw);
+  if (!$dt || $dt->format('Y-m-d') !== $expiryDateRaw) {
+    return null;
+  }
+
+  $today = new DateTime('today');
+  if ($dt < $today) {
+    return null;
+  }
+
+  return $dt->format('Y-m-d') . ' 23:59:59';
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $food_title     = trim($_POST['food_title']);
     $description    = trim($_POST['description']);
     $quantity       = trim($_POST['quantity']);
     $food_type      = $_POST['food_type'];
-    $expiry_time    = $_POST['expiry_time'];
+    $expiryDateRaw  = $_POST['expiry_time'];
     $pickup_address = trim($_POST['pickup_address']);
+
+    $expiry_time = normalizeExpiryDateToDatetime($expiryDateRaw);
 
     if (empty($food_title) || empty($quantity) || empty($expiry_time) || empty($pickup_address)) {
         $error = "Please fill all required fields.";
+    } elseif (!preg_match('/^\d+$/', $quantity) || (int)$quantity <= 0) {
+      $error = "Quantity must be a whole number greater than 0.";
     } else {
         $stmt = $conn->prepare("UPDATE donations SET food_title=?, description=?, quantity=?, food_type=?, expiry_time=?, pickup_address=? WHERE donation_id=? AND donor_id=?");
         $stmt->bind_param("ssssssii", $food_title, $description, $quantity, $food_type, $expiry_time, $pickup_address, $id, $user['id']);
@@ -73,7 +92,7 @@ require_once '../includes/header.php';
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Quantity *</label>
-          <input type="text" name="quantity" class="form-control" value="<?= htmlspecialchars($d['quantity']) ?>" required>
+          <input type="number" name="quantity" class="form-control" value="<?= htmlspecialchars($d['quantity']) ?>" required min="1" step="1" inputmode="numeric" title="Enter a whole number greater than 0">
         </div>
         <div class="form-group">
           <label class="form-label">Food Type *</label>
@@ -86,9 +105,9 @@ require_once '../includes/header.php';
 
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Expiry / Best Before *</label>
-          <input type="datetime-local" name="expiry_time" class="form-control" required
-            value="<?= date('Y-m-d\TH:i', strtotime($d['expiry_time'])) ?>">
+          <label class="form-label">Best before date *</label>
+          <input type="date" name="expiry_time" class="form-control" required min="<?= date('Y-m-d') ?>"
+            value="<?= date('Y-m-d', strtotime($d['expiry_time'])) ?>">
         </div>
         <div class="form-group">
           <label class="form-label">Pickup Address *</label>
