@@ -4,7 +4,7 @@ require_once 'includes/db.php';
 require_once 'includes/header.php';
 
 $total_donations = $conn->query("SELECT COUNT(*) FROM donations")->fetch_row()[0];
-$total_ngos      = $conn->query("SELECT COUNT(*) FROM users WHERE role='ngo'")->fetch_row()[0];
+$total_ngos      = $conn->query("SELECT COUNT(*) FROM ngos")->fetch_row()[0];
 $completed       = $conn->query("SELECT COUNT(*) FROM donations WHERE status='completed'")->fetch_row()[0];
 ?>
 
@@ -54,7 +54,7 @@ $completed       = $conn->query("SELECT COUNT(*) FROM donations WHERE status='co
 <?php
 $recent = $conn->query("
   SELECT d.*, u.name AS donor_name
-  FROM donations d JOIN users u ON d.donor_id = u.user_id
+  FROM donations d JOIN donors u ON d.donor_id = u.donor_id
   WHERE d.status = 'available'
   ORDER BY d.created_at DESC LIMIT 6
 ");

@@ -17,29 +17,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$email || !$password) {
         $error = "Please enter your email and password.";
     } else {
-        $stmt = $conn->prepare("SELECT user_id, name, password, role FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $row = $stmt->get_result()->fetch_assoc();
-        if ($row && password_verify($password, $row['password'])) {
+        $row = null;
+        $role = '';
+
+        // Try donor login first
+        $stmt = $conn->prepare("SELECT donor_id AS id, name, password FROM donors WHERE email = ? LIMIT 1");
+        if ($stmt) {
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $candidate = $stmt->get_result()->fetch_assoc();
+            if ($candidate && password_verify($password, $candidate['password'])) {
+                $row = $candidate;
+                $role = 'donor';
+            }
+        }
+
+        // If not a donor, try NGO
+        if (!$row) {
+            $stmt = $conn->prepare("SELECT ngo_id AS id, name, password FROM ngos WHERE email = ? LIMIT 1");
+            if ($stmt) {
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $candidate = $stmt->get_result()->fetch_assoc();
+                if ($candidate && password_verify($password, $candidate['password'])) {
+                    $row = $candidate;
+                    $role = 'ngo';
+                }
+            }
+        }
+
+        if ($row) {
           session_regenerate_id(true);
-            $_SESSION['user_id'] = $row['user_id'];
+            $_SESSION['user_id'] = (int)$row['id'];
             $_SESSION['name']    = $row['name'];
-            $_SESSION['role']    = $row['role'];
+            $_SESSION['role']    = $role;
             $_SESSION['email']   = $email;
 
           if ($remember) {
-            issueRememberMeToken($conn, (int)$row['user_id']);
+            issueRememberMeToken($conn, $role, (int)$row['id']);
           } else {
             // If user chose not to be remembered, ensure any previous cookie is cleared
             forgetRememberMeToken($conn);
           }
 
-            header("Location: " . ($row['role'] === 'donor' ? 'donor/my_donations.php' : 'ngo/request_food.php'));
+            header("Location: " . ($role === 'donor' ? 'donor/my_donations.php' : 'ngo/request_food.php'));
             exit;
-        } else {
-            $error = "Incorrect email or password.";
         }
+
+        $error = "Incorrect email or password.";
     }
 }
 

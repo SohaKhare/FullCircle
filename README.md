@@ -114,7 +114,8 @@ Donor marks as Complete → donation status: completed
 
 | Table              | Purpose                               |
 | ------------------ | ------------------------------------- |
-| `users`            | Donors and NGOs                       |
+| `donors`           | Donor accounts                        |
+| `ngos`             | NGO accounts                          |
 | `donations`        | Food listings by donors               |
 | `requests`         | NGO requests for donations            |
 | `contact_messages` | Messages from contact form            |
