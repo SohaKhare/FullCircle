@@ -1,0 +1,216 @@
+/* ─── NAVBAR ─── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
+}
+
+.nav-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 28px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.nav-logo {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.25rem;
+  color: var(--lavender-700);
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+}
+
+body.dark-mode .nav-logo {
+  color: var(--lavender-200);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.nav-links a {
+  display: block;
+  padding: 7px 13px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--transition),
+    background var(--transition);
+}
+
+.nav-links a:hover {
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.nav-user {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Toggle pill */
+.dark-toggle {
+  width: 40px;
+  height: 22px;
+  background: var(--border);
+  border: none;
+  border-radius: 11px;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--transition);
+  flex-shrink: 0;
+}
+
+.dark-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition:
+    transform 0.22s ease,
+    background var(--transition);
+}
+
+body.dark-mode .dark-toggle {
+  background: var(--lavender-600);
+}
+
+body.dark-mode .dark-toggle::after {
+  background: #fff;
+  transform: translateX(18px);
+}
+
+/* ─── CONTACT ─── */
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.contact-info h2 {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.contact-info > p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.contact-icon {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.contact-item-text strong {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1px;
+}
+
+.contact-item-text span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--nav-bg);
+  border-top: 1px solid var(--nav-border);
+  padding: 28px;
+  transition:
+    background var(--transition),
+    border-color var(--transition);
+}
+
+.footer-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-brand {
+  font-family: "DM Serif Display", serif;
+  font-size: 1rem;
+  color: var(--lavender-700);
+}
+
+body.dark-mode .footer-brand {
+  color: var(--lavender-200);
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  transition: color var(--transition);
+}
+
+.footer-links a:hover {
+  color: var(--text-primary);
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}

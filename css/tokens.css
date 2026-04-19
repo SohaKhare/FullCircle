@@ -1,0 +1,102 @@
+/* ─── LIGHT MODE TOKENS ─── */
+:root {
+  /* Pastel mint greens (primary) */
+  --green-900: #1c3a30;
+  --green-800: #245044;
+  --green-700: #2e6b5b;
+  --green-600: #3a8270;
+  --green-500: #4c9a84;
+  --green-400: #78c1ad;
+  --green-200: #c4efe2;
+  --green-100: #e3faf3;
+  --green-50: #f2fdf9;
+
+  /* Pastel lavender (secondary / accents) */
+  --lavender-900: #2f2752;
+  --lavender-800: #40356b;
+  --lavender-700: #5a4d8f;
+  --lavender-600: #6c5fb0;
+  --lavender-500: #8a7fe0;
+  --lavender-400: #a99ff2;
+  --lavender-200: #ddd9ff;
+  --lavender-100: #f0efff;
+  --lavender-50: #f8f7ff;
+
+  --bg-page: #f7f8f6;
+  --bg-card: #ffffff;
+  --bg-subtle: #f0f4f1;
+  --bg-input: #ffffff;
+
+  --border: #d8e5d9;
+  --border-focus: var(--lavender-500);
+  --border-input: #c8d9ca;
+
+  --text-primary: #111c13;
+  --text-secondary: #3d5241;
+  --text-muted: #6b7f6d;
+  --text-placeholder: #9aaa9c;
+
+  --success-bg: var(--green-50);
+  --success-text: var(--green-900);
+  --success-border: var(--green-200);
+  --error-bg: #fdf2f2;
+  --error-text: #7f1d1d;
+  --error-border: #fca5a5;
+  --warning-bg: #fffbeb;
+  --warning-text: #78350f;
+  --warning-border: #fcd34d;
+  --info-bg: #eff6ff;
+  --info-text: #1e3a5f;
+  --info-border: #bfdbfe;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.1);
+
+  --nav-bg: #ffffff;
+  --nav-border: #e2eae3;
+
+  --focus-ring: 0 0 0 3px rgba(138, 127, 224, 0.22);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --transition: 0.18s ease;
+}
+
+/* ─── DARK MODE TOKENS ─── */
+body.dark-mode {
+  --bg-page: #0f1710;
+  --bg-card: #162018;
+  --bg-subtle: #1b2a1d;
+  --bg-input: #1b2a1d;
+
+  --border: #2a3f2c;
+  --border-input: #2a3f2c;
+
+  --text-primary: #e6f0e7;
+  --text-secondary: #a8c4ab;
+  --text-muted: #6f8f72;
+  --text-placeholder: #4a6b4d;
+
+  --success-bg: #162018;
+  --success-text: #a8d5ac;
+  --success-border: #2a4f2e;
+  --error-bg: #1f1010;
+  --error-text: #fca5a5;
+  --error-border: #5c1a1a;
+  --warning-bg: #1f1a0d;
+  --warning-text: #fcd34d;
+  --warning-border: #5c4a10;
+  --info-bg: #0f1a2a;
+  --info-text: #93c5fd;
+  --info-border: #1e3a5f;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.5);
+
+  --nav-bg: #0f1710;
+  --nav-border: #1e2f20;
+}

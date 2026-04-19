@@ -1,0 +1,200 @@
+/* ─── FORMS ─── */
+.form-page {
+  min-height: calc(100vh - 62px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: var(--bg-page);
+}
+
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 44px 40px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: var(--shadow-lg);
+}
+
+.form-card.wide {
+  max-width: 620px;
+}
+
+.form-heading {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.75rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+
+.form-sub {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 28px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.form-control {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+  appearance: none;
+}
+
+.form-control::placeholder {
+  color: var(--text-placeholder);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--focus-ring);
+}
+
+.form-control.is-invalid {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-control.is-valid {
+  border-color: var(--green-500);
+}
+
+select.form-control {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7f6d' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Inline validation feedback */
+.field-hint {
+  font-size: 0.775rem;
+  margin-top: 5px;
+  display: none;
+}
+
+.field-hint.show {
+  display: block;
+}
+
+.field-hint.error {
+  color: #dc2626;
+}
+
+.field-hint.success {
+  color: var(--green-600);
+}
+
+body.dark-mode .field-hint.error {
+  color: #fca5a5;
+}
+
+body.dark-mode .field-hint.success {
+  color: var(--green-400);
+}
+
+/* Password strength */
+.pw-strength {
+  margin-top: 8px;
+  display: none;
+}
+
+.pw-strength.show {
+  display: block;
+}
+
+.pw-strength-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.pw-strength-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition:
+    width 0.3s,
+    background 0.3s;
+  width: 0;
+}
+
+.pw-strength-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.strength-1 .pw-strength-fill {
+  width: 25%;
+  background: #dc2626;
+}
+
+.strength-2 .pw-strength-fill {
+  width: 50%;
+  background: #f59e0b;
+}
+
+.strength-3 .pw-strength-fill {
+  width: 75%;
+  background: #3b82f6;
+}
+
+.strength-4 .pw-strength-fill {
+  width: 100%;
+  background: var(--green-500);
+}
+
+.form-footer {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-footer a {
+  color: var(--lavender-600);
+  font-weight: 500;
+}
+
+body.dark-mode .form-footer a {
+  color: var(--lavender-400);
+}
