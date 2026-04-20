@@ -40,10 +40,10 @@ function clearRememberMeCookie(): void {
     unset($_COOKIE[REMEMBER_ME_COOKIE_NAME]);
 }
 
-function issueRememberMeToken(mysqli $conn, int $userId): void {
-    // Keep one active token per user (simple + safer for small apps)
-    $del = $conn->prepare("DELETE FROM remember_tokens WHERE user_id = ?");
-    $del->bind_param("i", $userId);
+function issueRememberMeToken(mysqli $conn, string $principalType, int $principalId): void {
+    // Keep one active token per account (simple + safer for small apps)
+    $del = $conn->prepare("DELETE FROM remember_tokens WHERE principal_type = ? AND principal_id = ?");
+    $del->bind_param("si", $principalType, $principalId);
     $del->execute();
 
     $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
@@ -51,8 +51,8 @@ function issueRememberMeToken(mysqli $conn, int $userId): void {
     $expiresTs = time() + (REMEMBER_ME_LIFETIME_DAYS * 86400);
     $expiresAt = date('Y-m-d H:i:s', $expiresTs);
 
-    $ins = $conn->prepare("INSERT INTO remember_tokens (user_id, token_hash, expires_at) VALUES (?, ?, ?)");
-    $ins->bind_param("iss", $userId, $tokenHash, $expiresAt);
+    $ins = $conn->prepare("INSERT INTO remember_tokens (principal_type, principal_id, token_hash, expires_at) VALUES (?, ?, ?, ?)");
+    $ins->bind_param("siss", $principalType, $principalId, $tokenHash, $expiresAt);
     $ins->execute();
 
     setRememberMeCookie($token, $expiresTs);
@@ -81,30 +81,54 @@ function restoreSessionFromRememberMeCookie(): void {
 
     $tokenHash = hash('sha256', $token);
     $stmt = $conn->prepare(
-        "SELECT rt.user_id, rt.expires_at, u.name, u.email, u.role
-         FROM remember_tokens rt
-         JOIN users u ON u.user_id = rt.user_id
-         WHERE rt.token_hash = ? AND rt.expires_at > NOW()
+        "SELECT principal_type, principal_id, expires_at
+         FROM remember_tokens
+         WHERE token_hash = ? AND expires_at > NOW()
          LIMIT 1"
     );
     $stmt->bind_param("s", $tokenHash);
     $stmt->execute();
-    $row = $stmt->get_result()->fetch_assoc();
+    $tok = $stmt->get_result()->fetch_assoc();
 
-    if (!$row) {
+    if (!$tok) {
         // Invalid/expired token
         forgetRememberMeToken($conn);
         return;
     }
 
+    $principalType = $tok['principal_type'] ?? '';
+    $principalId = (int)($tok['principal_id'] ?? 0);
+    if (!$principalId || ($principalType !== 'donor' && $principalType !== 'ngo')) {
+        forgetRememberMeToken($conn);
+        return;
+    }
+
+    if ($principalType === 'donor') {
+        $u = $conn->prepare("SELECT donor_id AS id, name, email FROM donors WHERE donor_id = ? LIMIT 1");
+    } else {
+        $u = $conn->prepare("SELECT ngo_id AS id, name, email FROM ngos WHERE ngo_id = ? LIMIT 1");
+    }
+    $u->bind_param("i", $principalId);
+    $u->execute();
+    $row = $u->get_result()->fetch_assoc();
+
+    if (!$row) {
+        // Account removed; invalidate token
+        forgetRememberMeToken($conn);
+        return;
+    }
+
     session_regenerate_id(true);
-    $_SESSION['user_id'] = (int)$row['user_id'];
+    $_SESSION['user_id'] = (int)$row['id'];
     $_SESSION['name']    = $row['name'];
-    $_SESSION['role']    = $row['role'];
+    $_SESSION['role']    = $principalType;
     $_SESSION['email']   = $row['email'];
 
-    // Note: We intentionally do NOT rotate the token here to avoid race-condition logouts
-    // when multiple requests arrive with the same cookie after a fresh browser restart.
+    // Optional: track usage
+    $touch = $conn->prepare("UPDATE remember_tokens SET last_used_at = NOW() WHERE token_hash = ?");
+    $touch->bind_param("s", $tokenHash);
+    $touch->execute();
+
 }
 
 // Run restore logic on every protected page include

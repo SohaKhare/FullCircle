@@ -65,7 +65,7 @@ require_once '../includes/header.php';
           <?php while ($d = $donations->fetch_assoc()):
             $reqs = $conn->query("
               SELECT r.*, u.name AS ngo_name, u.ngo_name AS org_name, u.phone
-              FROM requests r JOIN users u ON r.ngo_id = u.user_id
+              FROM requests r JOIN ngos u ON r.ngo_id = u.ngo_id
               WHERE r.donation_id={$d['donation_id']}
               ORDER BY r.request_date DESC
             ");

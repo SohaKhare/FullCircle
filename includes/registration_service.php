@@ -58,7 +58,21 @@ function fc_registration_validate(array $data): string {
 function fc_registration_create_user(mysqli $conn, array $data, string &$error): bool {
     $error = '';
 
-    $stmt = $conn->prepare('SELECT user_id FROM users WHERE email = ?');
+    // Enforce email uniqueness across BOTH tables.
+    $stmt = $conn->prepare('SELECT donor_id FROM donors WHERE email = ? LIMIT 1');
+    if (!$stmt) {
+        $error = 'Registration failed. Please try again.';
+        return false;
+    }
+    $stmt->bind_param('s', $data['email']);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+        $error = 'This email is already registered.';
+        return false;
+    }
+
+    $stmt = $conn->prepare('SELECT ngo_id FROM ngos WHERE email = ? LIMIT 1');
     if (!$stmt) {
         $error = 'Registration failed. Please try again.';
         return false;
@@ -72,22 +86,40 @@ function fc_registration_create_user(mysqli $conn, array $data, string &$error):
     }
 
     $hashed = password_hash($data['password'], PASSWORD_DEFAULT);
-    $stmt = $conn->prepare('INSERT INTO users (name,email,phone,password,role,address,ngo_name) VALUES (?,?,?,?,?,?,?)');
-    if (!$stmt) {
-        $error = 'Registration failed. Please try again.';
+
+    if (($data['role'] ?? '') === 'donor') {
+        $stmt = $conn->prepare('INSERT INTO donors (name,email,phone,password,address) VALUES (?,?,?,?,?)');
+        if (!$stmt) {
+            $error = 'Registration failed. Please try again.';
+            return false;
+        }
+        $stmt->bind_param(
+            'sssss',
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $hashed,
+            $data['address']
+        );
+    } elseif (($data['role'] ?? '') === 'ngo') {
+        $stmt = $conn->prepare('INSERT INTO ngos (name,ngo_name,email,phone,password,address) VALUES (?,?,?,?,?,?)');
+        if (!$stmt) {
+            $error = 'Registration failed. Please try again.';
+            return false;
+        }
+        $stmt->bind_param(
+            'ssssss',
+            $data['name'],
+            $data['ngo_name'],
+            $data['email'],
+            $data['phone'],
+            $hashed,
+            $data['address']
+        );
+    } else {
+        $error = 'Please select a valid role.';
         return false;
     }
-
-    $stmt->bind_param(
-        'sssssss',
-        $data['name'],
-        $data['email'],
-        $data['phone'],
-        $hashed,
-        $data['role'],
-        $data['address'],
-        $data['ngo_name']
-    );
 
     if (!$stmt->execute()) {
         $error = 'Registration failed. Please try again.';

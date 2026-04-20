@@ -20,7 +20,7 @@ $requests = $conn->query("
            u.name as donor_name, u.phone as donor_phone
     FROM requests r
     JOIN donations d ON r.donation_id = d.donation_id
-    JOIN users u ON d.donor_id = u.user_id
+  JOIN donors u ON d.donor_id = u.donor_id
     WHERE r.ngo_id = {$user['id']}
     ORDER BY r.request_date DESC
 ");

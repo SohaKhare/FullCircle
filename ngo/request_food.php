@@ -61,7 +61,7 @@ if ($filter_type) {
 }
 
 $sql = "SELECT d.*, u.name as donor_name, u.phone as donor_phone
-        FROM donations d JOIN users u ON d.donor_id = u.user_id
+  FROM donations d JOIN donors u ON d.donor_id = u.donor_id
         WHERE $where ORDER BY d.created_at DESC";
 
 $stmt = $conn->prepare($sql);
